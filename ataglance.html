@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>At a Glance Weather</title>
+  <style>
+    .ataglance-container {
+      max-width: 600px;
+      margin: 20px auto;
+      font-family: Arial, sans-serif;
+    }
+    .forecast-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .forecast-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      flex: 1 1 200px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+    .forecast-card h3 {
+      margin: 0 0 5px 0;
+      font-size: 1.1em;
+      color: #333;
+    }
+    .forecast-card p {
+      margin: 0;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
+  <script src="https://pym.nprapps.org/pym.v1.min.js"></script>
+</head>
+<body>
+  <div class="ataglance-container">
+    <h2>At a Glance</h2>
+    <div class="forecast-cards" id="forecast-cards">
+      <div class="forecast-card">
+        <h3>This Afternoon</h3>
+        <p id="this-afternoon">Loading...</p>
+      </div>
+      <div class="forecast-card">
+        <h3>Tonight</h3>
+        <p id="tonight">Loading...</p>
+      </div>
+      <div class="forecast-card">
+        <h3>Friday</h3>
+        <p id="friday">Loading...</p>
+      </div>
+      <div class="forecast-card">
+        <h3>Saturday</h3>
+        <p id="saturday">Loading...</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const pymChild = new pym.Child({ polling: 500 });
+
+    function fetchWeatherData() {
+      fetch('https://raw.githubusercontent.com/bdvermontpublic/weather-widget-vp/main/ataglance.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById('this-afternoon').textContent = data.this_afternoon || 'Not available';
+          document.getElementById('tonight').textContent = data.tonight || 'Not available';
+          document.getElementById('friday').textContent = data.friday || 'Not available';
+          document.getElementById('saturday').textContent = data.saturday || 'Not available';
+
+          pymChild.sendHeight();
+        })
+        .catch(error => {
+          console.error('Error fetching weather data:', error);
+          document.getElementById('this-afternoon').textContent = 'Error loading data';
+          document.getElementById('tonight').textContent = 'Error loading data';
+          document.getElementById('friday').textContent = 'Error loading data';
+          document.getElementById('saturday').textContent = 'Error loading data';
+
+          pymChild.sendHeight();
+        });
+    }
+
+    fetchWeatherData();
+    setInterval(fetchWeatherData, 300000);
+  </script>
+</body>
+</html>
