@@ -6,16 +6,51 @@
   <title>Weather Widget</title>
   <style>
     .weather-container {
-      border: 1px solid #ccc;
-      padding: 20px;
-      max-width: 400px;
+      max-width: 800px;
       margin: 20px auto;
-      text-align: center;
       font-family: Arial, sans-serif;
     }
-    .weather-icon {
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .ataglance-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      width: 200px;
+      text-align: center;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 1.2em;
+      color: #555;
+    }
+    .card img {
       width: 50px;
       height: 50px;
+      margin: 10px 0;
+    }
+    .card p {
+      margin: 0;
+      font-size: 1em;
+      color: #333;
+    }
+    .detailed-forecast {
+      padding: 20px;
+      border-top: 1px solid #ccc;
+    }
+    .detailed-forecast p {
+      margin: 5px 0;
     }
   </style>
   <!-- Include Pym.js for iframe resizing (optional) -->
@@ -24,27 +59,66 @@
 <body>
   <div class="weather-container">
     <h2>Weather Forecast</h2>
-    <p><strong>Abridged Forecast:</strong> <span id="abridged-forecast">Loading...</span></p>
-    <div id="detailed-forecast"></div>
+    <div class="ataglance-cards" id="ataglance-forecast"></div>
+    <div class="detailed-forecast" id="detailed-forecast"></div>
   </div>
 
   <script>
-    async function fetchAndDisplay(file, elementId) {
-      const response = await fetch(file);
-      const data = await response.json();
-      let content = '';
-      if (elementId === 'abridged-forecast') {
-        content = Object.values(data)[0] || 'No data available';
-      } else if (elementId === 'detailed-forecast') {
-        content = Object.entries(data).map(([day, desc]) => `<p>${day}: ${desc}</p>`).join('');
+    async function fetchAndDisplay() {
+      // Fetch At a Glance data
+      const ataglanceResponse = await fetch('ataglance.json');
+      const ataglanceData = await ataglanceResponse.json();
+      
+      // Map forecast periods to image URLs (replace with actual URLs)
+      const imageUrls = {
+        this_afternoon: 'https://via.placeholder.com/50?text=Afternoon',
+        tonight: 'https://via.placeholder.com/50?text=Tonight',
+        friday: 'https://via.placeholder.com/50?text=Friday',
+        saturday: 'https://via.placeholder.com/50?text=Saturday'
+      };
+
+      // Display At a Glance forecast in cards
+      const ataglanceContainer = document.getElementById('ataglance-forecast');
+      let ataglanceHtml = '';
+      for (const [period, forecast] of Object.entries(ataglanceData)) {
+        if (forecast) { // Only display non-empty forecasts
+          const displayPeriod = period
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase()); // e.g., "this_afternoon" -> "This Afternoon"
+          const imageUrl = imageUrls[period] || 'https://via.placeholder.com/50?text=Weather';
+          ataglanceHtml += `
+            <div class="card">
+              <h3>${displayPeriod} Forecast:</h3>
+              <img src="${imageUrl}" alt="${displayPeriod} weather">
+              <p>${forecast}</p>
+            </div>
+          `;
+        }
       }
-      document.getElementById(elementId).innerHTML = content;
+      ataglanceContainer.innerHTML = ataglanceHtml;
+
+      // Fetch and display Detailed forecast
+      const detailedResponse = await fetch('detailed.json');
+      const detailedData = await detailedResponse.json();
+      const detailedContainer = document.getElementById('detailed-forecast');
+      let detailedHtml = '<h3>Detailed Forecast</h3>';
+      for (const [day, desc] of Object.entries(detailedData)) {
+        if (desc) {
+          const displayDay = day
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, char => char.toUpperCase());
+          detailedHtml += `<p><strong>${displayDay}:</strong> ${desc}</p>`;
+        }
+      }
+      detailedContainer.innerHTML = detailedHtml;
     }
 
-    // Fetch and display data from ataglance.json (abridged)
-    fetchAndDisplay('ataglance.json', 'abridged-forecast');
-    // Fetch and display data from detailed.json (full forecast)
-    fetchAndDisplay('detailed.json', 'detailed-forecast');
+    // Load data on page load
+    fetchAndDisplay().catch(error => {
+      console.error('Error fetching or displaying data:', error);
+      document.getElementById('ataglance-forecast').innerHTML = '<p>Error loading forecast.</p>';
+      document.getElementById('detailed-forecast').innerHTML = '<p>Error loading forecast.</p>';
+    });
   </script>
 </body>
 </html>
