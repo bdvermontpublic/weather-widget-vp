@@ -44,6 +44,7 @@
       margin: 0;
       font-size: 1em;
       color: #333;
+      white-space: pre-line; /* Preserves newlines */
     }
     .detailed-forecast {
       padding: 20px;
@@ -69,31 +70,33 @@
       const ataglanceResponse = await fetch('ataglance.json');
       const ataglanceData = await ataglanceResponse.json();
       
-      // Map forecast periods to image URLs (replace with actual URLs)
+      // Map icon placeholders to actual image URLs
       const imageUrls = {
-        this_afternoon: 'https://via.placeholder.com/50?text=Afternoon',
-        tonight: 'https://via.placeholder.com/50?text=Tonight',
-        friday: 'https://via.placeholder.com/50?text=Friday',
-        saturday: 'https://via.placeholder.com/50?text=Saturday'
+        'Evening Mostly Clear Weather Icon': 'https://openweathermap.org/img/wn/01n.png',
+        'Daytime Cloudy and Sunny Weather Icon': 'https://openweathermap.org/img/wn/02d.png',
+        'Mix of sun and clouds': 'https://openweathermap.org/img/wn/03d.png'
+        // Add more mappings as needed
       };
 
       // Display At a Glance forecast in cards
       const ataglanceContainer = document.getElementById('ataglance-forecast');
       let ataglanceHtml = '';
-      for (const [period, forecast] of Object.entries(ataglanceData)) {
-        if (forecast) { // Only display non-empty forecasts
-          const displayPeriod = period
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, char => char.toUpperCase()); // e.g., "this_afternoon" -> "This Afternoon"
-          const imageUrl = imageUrls[period] || 'https://via.placeholder.com/50?text=Weather';
-          ataglanceHtml += `
-            <div class="card">
-              <h3>${displayPeriod} Forecast:</h3>
-              <img src="${imageUrl}" alt="${displayPeriod} weather">
-              <p>${forecast}</p>
-            </div>
-          `;
-        }
+      for (const [key, value] of Object.entries(ataglanceData)) {
+        if (key.endsWith('_icon') || !value) continue; // Skip icon entries and empty forecasts
+        const period = key; // e.g., "thursday_night"
+        const displayPeriod = period
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, char => char.toUpperCase()); // e.g., "Thursday Night"
+        const iconKey = `${period}_icon`;
+        const icon = ataglanceData[iconKey] || 'Unknown Icon';
+        const imageUrl = imageUrls[icon] || 'https://via.placeholder.com/50?text=Weather';
+        ataglanceHtml += `
+          <div class="card">
+            <h3>${displayPeriod} Forecast:</h3>
+            <img src="${imageUrl}" alt="${displayPeriod} weather">
+            <p>${value}</p>
+          </div>
+        `;
       }
       ataglanceContainer.innerHTML = ataglanceHtml;
 
