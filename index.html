@@ -72,10 +72,10 @@
       
       // Map icon placeholders to actual image URLs
       const imageUrls = {
-        'Evening Mostly Clear Weather Icon': 'https://openweathermap.org/img/wn/01n.png',
-        'Daytime Cloudy and Sunny Weather Icon': 'https://openweathermap.org/img/wn/02d.png',
-        'Mix of sun and clouds': 'https://openweathermap.org/img/wn/03d.png'
-        // Add more mappings as needed
+        'Evening Mostly Clear Weather Icon': 'https://fairbanksmuseum.org/wp-content/uploads/2023/03/moderate_rain_night.png', // Thursday Night: Rain likely
+        'Daytime Cloudy and Sunny Weather Icon': 'https://fairbanksmuseum.org/wp-content/uploads/2023/03/moderate_rain.png', // Friday: Rain likely
+        'Mix of sun and clouds': 'https://fairbanksmuseum.org/wp-content/uploads/2023/08/Mostly_sunny.png', // Saturday: Rain, but tapering off
+        'Daytime Cloudy and Sunny Weather Icon_Sunday': 'https://fairbanksmuseum.org/wp-content/uploads/2023/08/Mostly_sunny.png' // Sunday: Partly to mostly sunny
       };
 
       // Display At a Glance forecast in cards
@@ -88,7 +88,11 @@
           .replace(/_/g, ' ')
           .replace(/\b\w/g, char => char.toUpperCase()); // e.g., "Thursday Night"
         const iconKey = `${period}_icon`;
-        const icon = ataglanceData[iconKey] || 'Unknown Icon';
+        let icon = ataglanceData[iconKey] || 'Unknown Icon';
+        // Special handling for Sunday to avoid duplicate icon key
+        if (period === 'sunday' && icon === 'Daytime Cloudy and Sunny Weather Icon') {
+          icon = 'Daytime Cloudy and Sunny Weather Icon_Sunday';
+        }
         const imageUrl = imageUrls[icon] || 'https://via.placeholder.com/50?text=Weather';
         ataglanceHtml += `
           <div class="card">
