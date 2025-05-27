@@ -1,5 +1,14 @@
 {
-  "1": "",
-  "2": "",
-  "3": ""
+  "1": {
+    "description": "",
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+  },
+  "2": {
+    "description": "",
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png"
+  },
+  "3": {
+    "description": "",
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png"
+  }
 }
