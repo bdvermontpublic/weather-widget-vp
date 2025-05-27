@@ -3,24 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>At a Glance Weather</title>
+  <title>Weather Forecast</title>
   <style>
-    .ataglance-container {
+    .container {
       max-width: 600px;
       margin: 20px auto;
       font-family: Arial, sans-serif;
     }
-    .forecast-cards {
+    .section {
+      margin-bottom: 30px;
+    }
+    .forecast-cards, .detailed-forecast {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
     }
-    .forecast-card {
+    .forecast-card, .detailed-card {
       border: 1px solid #ccc;
       padding: 10px;
       flex: 1 1 200px;
       background-color: #f9f9f9;
       border-radius: 5px;
+    }
+    .forecast-card {
       display: flex;
       align-items: center;
     }
@@ -32,7 +37,7 @@
       height: 32px;
       margin-right: 10px;
     }
-    .forecast-card p {
+    .forecast-card p, .detailed-card p {
       margin: 0;
       font-size: 0.9em;
       color: #555;
@@ -41,15 +46,25 @@
   <script src="https://pym.nprapps.org/pym.v1.min.js"></script>
 </head>
 <body>
-  <div class="ataglance-container">
-    <h2>Weather Forecast</h2>
-    <div class="forecast-cards" id="forecast-cards"></div>
+  <div class="container">
+    <!-- At a Glance Section -->
+    <div class="section">
+      <h2>At a Glance</h2>
+      <div class="forecast-cards" id="forecast-cards"></div>
+    </div>
+
+    <!-- Detailed Forecast Section -->
+    <div class="section">
+      <h2>Detailed Forecast</h2>
+      <div class="detailed-forecast" id="detailed-forecast"></div>
+    </div>
   </div>
 
   <script>
     const pymChild = new pym.Child({ polling: 500 });
 
     function fetchWeatherData() {
+      // Fetch At a Glance data
       fetch('https://raw.githubusercontent.com/bdvermontpublic/weather-widget-vp/main/ataglance.json')
         .then(response => {
           if (!response.ok) {
@@ -78,12 +93,50 @@
           pymChild.sendHeight();
         })
         .catch(error => {
-          console.error('Error fetching weather data:', error);
+          console.error('Error fetching ataglance data:', error);
           const container = document.getElementById('forecast-cards');
           container.innerHTML = `
             <div class="forecast-card"><p>Error loading data</p></div>
             <div class="forecast-card"><p>Error loading data</p></div>
             <div class="forecast-card"><p>Error loading data</p></div>
+          `;
+          pymChild.sendHeight();
+        });
+
+      // Fetch Detailed Forecast data
+      fetch('https://raw.githubusercontent.com/bdvermontpublic/weather-widget-vp/main/detailed.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const detailedContainer = document.getElementById('detailed-forecast');
+          detailedContainer.innerHTML = ''; // Clear existing cards
+          for (let i = 1; i <= 5; i++) {
+            const key = i.toString();
+            const description = data[key];
+            if (description) { // Check if description exists
+              const div = document.createElement('div');
+              div.className = 'detailed-card';
+              div.innerHTML = `
+                <p>${description || 'Not available'}</p>
+              `;
+              detailedContainer.appendChild(div);
+            }
+          }
+          pymChild.sendHeight();
+        })
+        .catch(error => {
+          console.error('Error fetching detailed data:', error);
+          const detailedContainer = document.getElementById('detailed-forecast');
+          detailedContainer.innerHTML = `
+            <div class="detailed-card"><p>Error loading data</p></div>
+            <div class="detailed-card"><p>Error loading data</p></div>
+            <div class="detailed-card"><p>Error loading data</p></div>
+            <div class="detailed-card"><p>Error loading data</p></div>
+            <div class="detailed-card"><p>Error loading data</p></div>
           `;
           pymChild.sendHeight();
         });
