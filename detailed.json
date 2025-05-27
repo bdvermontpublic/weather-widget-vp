@@ -1,8 +1,15 @@
 {
-  "friday_night": "",
-  "saturday": "LOTSA RAIN",
-  "saturday_night": "LOTS AND LOTSA RAIN",
-  "sunday": "Partly to mostly sunny. Highs from the mid 50s to lower 60s north, and low to mid 60s in the south, except southeastern valleys in the mid to upper 60s.",
-  "sunday_night": "Mostly clear and cool. Lows in the upper 30s to mid 40s.",
-  "monday": ""
+  "extended": [
+    "Saturday:",
+    "is this working",
+    "Saturday Night:",
+    "hopefully",
+    "Sunday:",
+    "lets really hope lets really hope",
+    "Sunday Night:",
+    "Mostly clear and cool. Lows in the upper 30s to mid 40s.",
+    "Monday:",
+    "Mostly sunny and warmer. Highs in the 70s.",
+    "Back to the top"
+  ]
 }
