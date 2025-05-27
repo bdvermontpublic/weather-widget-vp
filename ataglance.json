@@ -1,5 +1,14 @@
 {
-  "1": "Sunny with highs in the 60s",
-  "2": "Cloudy with a chance of rain",
-  "3": "Mostly clear"
+  "1": {
+    "description": "Sunny with highs in the 60s",
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+  },
+  "2": {
+    "description": "Cloudy with a chance of rain",
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png"
+  },
+  "3": {
+    "description": "Mostly clear",
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png"
+  }
 }
