@@ -21,11 +21,16 @@
       flex: 1 1 200px;
       background-color: #f9f9f9;
       border-radius: 5px;
+      display: flex;
+      align-items: center;
     }
-    .forecast-card h3 {
-      margin: 0 0 5px 0;
-      font-size: 1.1em;
-      color: #333;
+    .forecast-card .content {
+      flex-grow: 1;
+    }
+    .forecast-card img {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
     }
     .forecast-card p {
       margin: 0;
@@ -38,24 +43,7 @@
 <body>
   <div class="ataglance-container">
     <h2>At a Glance</h2>
-    <div class="forecast-cards" id="forecast-cards">
-      <div class="forecast-card">
-        <h3>This Afternoon</h3>
-        <p id="this-afternoon">Loading...</p>
-      </div>
-      <div class="forecast-card">
-        <h3>Tonight</h3>
-        <p id="tonight">Loading...</p>
-      </div>
-      <div class="forecast-card">
-        <h3>Friday</h3>
-        <p id="friday">Loading...</p>
-      </div>
-      <div class="forecast-card">
-        <h3>Saturday</h3>
-        <p id="saturday">Loading...</p>
-      </div>
-    </div>
+    <div class="forecast-cards" id="forecast-cards"></div>
   </div>
 
   <script>
@@ -70,20 +58,32 @@
           return response.json();
         })
         .then(data => {
-          document.getElementById('this-afternoon').textContent = data.this_afternoon || 'Not available';
-          document.getElementById('tonight').textContent = data.tonight || 'Not available';
-          document.getElementById('friday').textContent = data.friday || 'Not available';
-          document.getElementById('saturday').textContent = data.saturday || 'Not available';
-
+          const container = document.getElementById('forecast-cards');
+          container.innerHTML = ''; // Clear existing cards
+          for (let i = 1; i <= 3; i++) {
+            const entry = data[i.toString()];
+            if (entry) {
+              const div = document.createElement('div');
+              div.className = 'forecast-card';
+              div.innerHTML = `
+                <div class="content">
+                  <img src="${entry.image || ''}" alt="Weather icon">
+                  <p>${entry.description || 'Not available'}</p>
+                </div>
+              `;
+              container.appendChild(div);
+            }
+          }
           pymChild.sendHeight();
         })
         .catch(error => {
           console.error('Error fetching weather data:', error);
-          document.getElementById('this-afternoon').textContent = 'Error loading data';
-          document.getElementById('tonight').textContent = 'Error loading data';
-          document.getElementById('friday').textContent = 'Error loading data';
-          document.getElementById('saturday').textContent = 'Error loading data';
-
+          const container = document.getElementById('forecast-cards');
+          container.innerHTML = `
+            <div class="forecast-card"><p>Error loading data</p></div>
+            <div class="forecast-card"><p>Error loading data</p></div>
+            <div class="forecast-card"><p>Error loading data</p></div>
+          `;
           pymChild.sendHeight();
         });
     }
