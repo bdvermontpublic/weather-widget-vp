@@ -42,7 +42,7 @@
 </head>
 <body>
   <div class="ataglance-container">
-    <h2>At a Glance</h2>
+    <h2>Weather Forecast</h2>
     <div class="forecast-cards" id="forecast-cards"></div>
   </div>
 
@@ -53,7 +53,7 @@
       fetch('https://raw.githubusercontent.com/bdvermontpublic/weather-widget-vp/main/ataglance.json')
         .then(response => {
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error('Network response was not ok ' + response.statusText);
           }
           return response.json();
         })
@@ -61,13 +61,14 @@
           const container = document.getElementById('forecast-cards');
           container.innerHTML = ''; // Clear existing cards
           for (let i = 1; i <= 3; i++) {
-            const entry = data[i.toString()];
-            if (entry) {
+            const key = i.toString();
+            const entry = data[key];
+            if (entry && entry.description) { // Check if entry and description exist
               const div = document.createElement('div');
               div.className = 'forecast-card';
               div.innerHTML = `
                 <div class="content">
-                  <img src="${entry.image || ''}" alt="Weather icon">
+                  <img src="${entry.image || ''}" alt="Weather icon" onerror="this.style.display='none';">
                   <p>${entry.description || 'Not available'}</p>
                 </div>
               `;
