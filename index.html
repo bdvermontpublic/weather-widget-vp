@@ -3,129 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather Widget</title>
+  <title>At a Glance Weather</title>
   <style>
-    .weather-container {
-      max-width: 800px;
+    .ataglance-container {
+      max-width: 600px;
       margin: 20px auto;
       font-family: Arial, sans-serif;
     }
-    h2 {
-      text-align: center;
-      color: #333;
-    }
-    .ataglance-cards {
+    .forecast-cards {
       display: flex;
       flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      margin-bottom: 30px;
+      gap: 10px;
     }
-    .card {
+    .forecast-card {
       border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 15px;
-      width: 200px;
-      text-align: center;
+      padding: 10px;
+      flex: 1 1 200px;
       background-color: #f9f9f9;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
     }
-    .card h3 {
-      margin: 0 0 10px;
-      font-size: 1.2em;
+    .forecast-card .content {
+      flex-grow: 1;
+    }
+    .forecast-card img {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+    }
+    .forecast-card p {
+      margin: 0;
+      font-size: 0.9em;
       color: #555;
     }
-    .card img {
-      width: 50px;
-      height: 50px;
-      margin: 10px 0;
-    }
-    .card p {
-      margin: 0;
-      font-size: 1em;
-      color: #333;
-      white-space: pre-line; /* Preserves newlines */
-    }
-    .detailed-forecast {
-      padding: 20px;
-      border-top: 1px solid #ccc;
-    }
-    .detailed-forecast p {
-      margin: 5px 0;
-    }
   </style>
-  <!-- Include Pym.js for iframe resizing (optional) -->
   <script src="https://pym.nprapps.org/pym.v1.min.js"></script>
 </head>
 <body>
-  <div class="weather-container">
+  <div class="ataglance-container">
     <h2>Weather Forecast</h2>
-    <div class="ataglance-cards" id="ataglance-forecast"></div>
-    <div class="detailed-forecast" id="detailed-forecast"></div>
+    <div class="forecast-cards" id="forecast-cards"></div>
   </div>
 
   <script>
-    async function fetchAndDisplay() {
-      // Fetch At a Glance data
-      const ataglanceResponse = await fetch('ataglance.json');
-      const ataglanceData = await ataglanceResponse.json();
-      
-      // Map icon placeholders to actual image URLs
-      const imageUrls = {
-        'Evening Mostly Clear Weather Icon': 'https://fairbanksmuseum.org/wp-content/uploads/2023/03/moderate_rain_night.png', // Thursday Night: Rain likely
-        'Daytime Cloudy and Sunny Weather Icon': 'https://fairbanksmuseum.org/wp-content/uploads/2023/03/moderate_rain.png', // Friday: Rain likely
-        'Mix of sun and clouds': 'https://fairbanksmuseum.org/wp-content/uploads/2023/08/Mostly_sunny.png', // Saturday: Rain, but tapering off
-        'Daytime Cloudy and Sunny Weather Icon_Sunday': 'https://fairbanksmuseum.org/wp-content/uploads/2023/08/Mostly_sunny.png' // Sunday: Partly to mostly sunny
-      };
+    const pymChild = new pym.Child({ polling: 500 });
 
-      // Display At a Glance forecast in cards
-      const ataglanceContainer = document.getElementById('ataglance-forecast');
-      let ataglanceHtml = '';
-      for (const [key, value] of Object.entries(ataglanceData)) {
-        if (key.endsWith('_icon') || !value) continue; // Skip icon entries and empty forecasts
-        const period = key; // e.g., "thursday_night"
-        const displayPeriod = period
-          .replace(/_/g, ' ')
-          .replace(/\b\w/g, char => char.toUpperCase()); // e.g., "Thursday Night"
-        const iconKey = `${period}_icon`;
-        let icon = ataglanceData[iconKey] || 'Unknown Icon';
-        // Special handling for Sunday to avoid duplicate icon key
-        if (period === 'sunday' && icon === 'Daytime Cloudy and Sunny Weather Icon') {
-          icon = 'Daytime Cloudy and Sunny Weather Icon_Sunday';
-        }
-        const imageUrl = imageUrls[icon] || 'https://via.placeholder.com/50?text=Weather';
-        ataglanceHtml += `
-          <div class="card">
-            <h3>${displayPeriod} Forecast:</h3>
-            <img src="${imageUrl}" alt="${displayPeriod} weather">
-            <p>${value}</p>
-          </div>
-        `;
-      }
-      ataglanceContainer.innerHTML = ataglanceHtml;
-
-      // Fetch and display Detailed forecast
-      const detailedResponse = await fetch('detailed.json');
-      const detailedData = await detailedResponse.json();
-      const detailedContainer = document.getElementById('detailed-forecast');
-      let detailedHtml = '<h3>Detailed Forecast</h3>';
-      for (const [day, desc] of Object.entries(detailedData)) {
-        if (desc) {
-          const displayDay = day
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, char => char.toUpperCase());
-          detailedHtml += `<p><strong>${displayDay}:</strong> ${desc}</p>`;
-        }
-      }
-      detailedContainer.innerHTML = detailedHtml;
+    function fetchWeatherData() {
+      fetch('https://raw.githubusercontent.com/bdvermontpublic/weather-widget-vp/main/ataglance.json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+          }
+          return response.json();
+        })
+        .then(data => {
+          const container = document.getElementById('forecast-cards');
+          container.innerHTML = ''; // Clear existing cards
+          for (let i = 1; i <= 3; i++) {
+            const key = i.toString();
+            const entry = data[key];
+            if (entry && entry.description) { // Check if entry and description exist
+              const div = document.createElement('div');
+              div.className = 'forecast-card';
+              div.innerHTML = `
+                <div class="content">
+                  <img src="${entry.image || ''}" alt="Weather icon" onerror="this.style.display='none';">
+                  <p>${entry.description || 'Not available'}</p>
+                </div>
+              `;
+              container.appendChild(div);
+            }
+          }
+          pymChild.sendHeight();
+        })
+        .catch(error => {
+          console.error('Error fetching weather data:', error);
+          const container = document.getElementById('forecast-cards');
+          container.innerHTML = `
+            <div class="forecast-card"><p>Error loading data</p></div>
+            <div class="forecast-card"><p>Error loading data</p></div>
+            <div class="forecast-card"><p>Error loading data</p></div>
+          `;
+          pymChild.sendHeight();
+        });
     }
 
-    // Load data on page load
-    fetchAndDisplay().catch(error => {
-      console.error('Error fetching or displaying data:', error);
-      document.getElementById('ataglance-forecast').innerHTML = '<p>Error loading forecast.</p>';
-      document.getElementById('detailed-forecast').innerHTML = '<p>Error loading forecast.</p>';
-    });
+    fetchWeatherData();
+    setInterval(fetchWeatherData, 300000);
   </script>
 </body>
 </html>
