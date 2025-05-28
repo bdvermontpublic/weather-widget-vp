@@ -1,20 +1,20 @@
 {
   "1": {
     "heading": "**Today**",
-    "description": "Light showers expected this afternoon",
-    "temperature": "**60°F**",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+    "description": "Scorching sun burns through the haze, sandstorms rage across\r\nthe dunes",
+    "temperature": "**120°F**",
+    "image": ""
   },
   "2": {
     "heading": "**Tonight**",
-    "description": "Partly cloudy skies tonight",
-    "temperature": "**50°F**",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png"
+    "description": "Eerie silence under a blood-red moon, toxic winds howl through\r\nthe wastes",
+    "temperature": "**45°F**",
+    "image": ""
   },
   "3": {
     "heading": "**Tomorrow**",
-    "description": "Sunny with a chance of showers tomorrow morning",
-    "temperature": "**65°F**",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png"
+    "description": "Blazing heat returns, acid rain drizzles from a cracked sky",
+    "temperature": "**125°F**",
+    "image": ""
   }
 }
