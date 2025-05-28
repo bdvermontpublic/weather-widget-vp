@@ -1,14 +1,20 @@
 {
   "1": {
-    "description": "Heading: Today\r\nDescription: Light showers expected this afternoon\r\nTemperature: 60°F\r\nImage:\r\nhttps: //bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+    "heading": "**Today**",
+    "description": "",
+    "temperature": "**N/A**",
+    "image": ""
   },
   "2": {
-    "description": "Heading: Tonight\r\nDescription: Partly cloudy skies tonight\r\nTemperature: 50°F\r\nImage:\r\nhttps: //bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png"
+    "heading": "**Tonight**",
+    "description": "",
+    "temperature": "**N/A**",
+    "image": ""
   },
   "3": {
-    "description": "Heading: Tomorrow\r\nDescription: Sunny with a chance of showers tomorrow morning\r\nTemperature: 65°F\r\nImage:\r\nhttps: //bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png"
+    "heading": "**Tomorrow**",
+    "description": "",
+    "temperature": "**N/A**",
+    "image": ""
   }
 }

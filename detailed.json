@@ -1,7 +1,22 @@
-{
-  "1": "Highs in the low 60s with occasional drizzle",
-  "2": "Temperatures dropping to the 50s overnight",
-  "3": "Expect some sun mixed with brief showers",
-  "4": "Winds picking up slightly by midday",
-  "5": "Clearer conditions by late tomorrow"
-}
+[
+  {
+    "heading": "**Detailed 1:**",
+    "description": "Highs in the low 60s with occasional drizzle"
+  },
+  {
+    "heading": "**Detailed 2:**",
+    "description": "Temperatures dropping to the 50s overnight"
+  },
+  {
+    "heading": "**Detailed 3:**",
+    "description": "Expect some sun mixed with brief showers"
+  },
+  {
+    "heading": "**Detailed 4:**",
+    "description": "Winds picking up slightly by midday"
+  },
+  {
+    "heading": "**Detailed 5:**",
+    "description": "Clearer conditions by late tomorrow"
+  }
+]
