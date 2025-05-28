@@ -1,14 +1,14 @@
 {
   "1": {
-    "description": "Light showers expected this afternoon\r\nImage:\r\nhttps: //bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+    "description": "",
+    "image": ""
   },
   "2": {
-    "description": "Partly cloudy skies tonight\r\nImage:\r\nhttps: //bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png"
+    "description": "",
+    "image": ""
   },
   "3": {
-    "description": "Sunny with a chance of showers tomorrow morning\r\nImage:\r\nhttps: //bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png"
+    "description": "",
+    "image": ""
   }
 }
