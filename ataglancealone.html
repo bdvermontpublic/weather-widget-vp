@@ -7,6 +7,7 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
     .container { display: flex; flex-direction: column; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
+    .section { margin-bottom: 10px; }
     .item { display: flex; align-items: flex-start; margin-bottom: 5px; }
     .image { max-width: 80px; max-height: 80px; margin-right: 10px; }
     .text-content { flex: 1; }
@@ -32,7 +33,7 @@
       d.getElementsByTagName('head')[0].appendChild(js);
     })(document, 'script', 'pym-js');
 
-    // Initialize pymChild and update height after content loads
+    // Initialize pymChild
     let pymChild = null;
     window.addEventListener('load', () => {
       if (window.pym) {
@@ -46,6 +47,7 @@
       .then(data => {
         const contentDiv = document.getElementById('ataglance-content');
         contentDiv.innerHTML = '';
+        const imagesToLoad = [];
         for (let i = 1; i <= 3; i++) {
           const item = data[i];
           if (item && item.heading) {
@@ -60,10 +62,24 @@
               </div>
             `;
             contentDiv.appendChild(div);
+            if (item.image) {
+              const img = div.querySelector('img');
+              imagesToLoad.push(new Promise(resolve => {
+                img.onload = resolve;
+                img.onerror = resolve;
+              }));
+            }
           }
         }
-        // Update height after content loads
-        if (pymChild) pymChild.sendHeight();
+        // Wait for images to load, then update height with a slight delay
+        Promise.all(imagesToLoad).then(() => {
+          setTimeout(() => {
+            if (pymChild) {
+              pymChild.sendHeight();
+              console.log('Height sent:', document.body.scrollHeight);
+            }
+          }, 100);
+        });
       })
       .catch(error => console.error('Error loading ataglance.json:', error));
   </script>
