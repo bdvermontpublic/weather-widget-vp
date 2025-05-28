@@ -3,18 +3,18 @@
     "heading": "**Today**",
     "description": "Light showers expected this afternoon",
     "temperature": "**60°F**",
-    "image": ""
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
   },
   "2": {
     "heading": "**Tonight**",
     "description": "Partly cloudy skies tonight",
     "temperature": "**50°F**",
-    "image": ""
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_cloudy_night.png"
   },
   "3": {
     "heading": "**Tomorrow**",
     "description": "Sunny with a chance of showers tomorrow morning",
     "temperature": "**65°F**",
-    "image": ""
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/partly_sunny_showers.png"
   }
 }
