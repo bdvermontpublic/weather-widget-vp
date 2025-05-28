@@ -1,20 +1,20 @@
 {
   "1": {
     "heading": "**Today**",
-    "description": "",
-    "temperature": "**N/A**",
+    "description": "Light showers expected this afternoon",
+    "temperature": "**60°F**",
     "image": ""
   },
   "2": {
     "heading": "**Tonight**",
-    "description": "",
-    "temperature": "**N/A**",
+    "description": "Partly cloudy skies tonight",
+    "temperature": "**50°F**",
     "image": ""
   },
   "3": {
     "heading": "**Tomorrow**",
-    "description": "",
-    "temperature": "**N/A**",
+    "description": "Sunny with a chance of showers tomorrow morning",
+    "temperature": "**65°F**",
     "image": ""
   }
 }
