@@ -1,20 +1,20 @@
 {
   "1": {
     "heading": "**Today**",
-    "description": "Scorching sun burns through the haze, sandstorms rage across\r\nthe dunes",
-    "temperature": "**120°F**",
+    "description": "Blinding snowstorm sweeps across the tundra, winds howling at\r\ndeadly speeds",
+    "temperature": "**-20°F**",
     "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
   },
   "2": {
     "heading": "**Tonight**",
-    "description": "Eerie silence under a blood-red moon, toxic winds howl through\r\nthe wastes",
-    "temperature": "**45°F**",
+    "description": "Temperatures drop further, ice crystals form in the air under\r\na pale moon",
+    "temperature": "**-35°F**",
     "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
   },
   "3": {
     "heading": "**Tomorrow**",
-    "description": "Blazing heat returns, acid rain drizzles from a cracked sky",
-    "temperature": "**125°F**",
+    "description": "Brief respite with light flurries, but frostbite risk remains\r\nhigh",
+    "temperature": "**-15°F**",
     "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
   }
 }
