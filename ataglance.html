@@ -60,7 +60,7 @@
         .then(data => {
           const container = document.getElementById('forecast-cards');
           container.innerHTML = ''; // Clear existing cards
-          for (let i = 1; i <= 3; i++) {
+          for (let i = 1; i <= 4; i++) {
             const key = i.toString();
             const entry = data[key];
             if (entry && entry.description) { // Check if entry and description exist
