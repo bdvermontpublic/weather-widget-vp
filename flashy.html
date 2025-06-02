@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Weather Widget - Vermont Public</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; transition: background-color 0.5s; }
+    body.cold { background-color: #e6f0fa; color: #333; }
+    body.hot { background-color: #ffe6e6; color: #333; }
+    body.neutral { background-color: #f0f0f0; color: #333; }
+    .container { display: flex; flex-direction: column; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
+    .section { margin-bottom: 10px; }
+    #alert { display: none; background-color: #ffcccc; padding: 5px; margin-bottom: 10px; font-size: 0.9em; color: #333; }
+    .item { display: flex; align-items: flex-start; margin-bottom: 5px; }
+    .image { max-width: 80px; max-height: 80px; margin-right: 10px; }
+    .text-content { flex: 1; }
+    .text-content h3 { margin: 0 0 2px 0; font-weight: bold; }
+    .text-content p { margin: 0 0 2px 0; word-wrap: break-word; }
+    .text-content p strong { font-weight: bold; }
+    #timestamp { font-size: 0.8em; color: #666; margin-bottom: 10px; }
+    #share-btn { margin-top: 10px; padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="alert"></div>
+    <p id="timestamp"></p>
+    <div class="section" id="ataglance-section">
+      <h2>At a Glance</h2>
+      <div id="ataglance-content"></div>
+    </div>
+    <div class="section" id="detailed-section">
+      <h2>Detailed Forecast</h2>
+      <div id="detailed-content"></div>
+    </div>
+    <button id="share-btn">Share this Forecast</button>
+  </div>
+
+  <script>
+    // Load Pym.js
+    (function(d, s, id) {
+      const js = d.createElement(s);
+      js.id = id;
+      js.src = 'https://pym.nprapps.org/pym.v1.min.js';
+      d.getElementsByTagName('head')[0].appendChild(js);
+    })(document, 'script', 'pym-js');
+
+    // Initialize pymChild
+    let pymChild = null;
+    window.addEventListener('load', () => {
+      if (window.pym) {
+        pymChild = new pym.Child({ polling: 500 });
+      }
+    });
+
+    // Fetch and display weather data
+    Promise.all([
+      fetch('ataglance.json').then(response => {
+        const lastModified = new Date(response.headers.get('Last-Modified'));
+        document.getElementById('timestamp').textContent = `Last updated: ${lastModified.toLocaleString()}`;
+        return response.json();
+      }),
+      fetch('detailed.json').then(response => response.json())
+    ])
+    .then(([ataglanceData, detailedData]) => {
+      const ataglanceDiv = document.getElementById('ataglance-content');
+      ataglanceDiv.innerHTML = '';
+      const imagesToLoad = [];
+      for (let i = 1; i <= 4; i++) {
+        const item = ataglanceData[i];
+        if (item && item.heading) {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            ${item.image ? `<img src="${item.image}" alt="${item.heading.replace(/\*\*/g, '')} weather image" class="image">` : ''}
+            <div class="text-content">
+              <h3>${item.heading.replace(/\*\*/g, '')}</h3>
+              <p>${item.description}</p>
+              <p><strong>Temperature:</strong> ${item.temperature.replace(/\*\*/g, '')}</p>
+            </div>
+          `;
+          ataglanceDiv.appendChild(div);
+          if (item.image) {
+            const img = div.querySelector('img');
+            imagesToLoad.push(new Promise(resolve => {
+              img.onload = resolve;
+              img.onerror = resolve;
+            }));
+          }
+        }
+      }
+
+      const detailedDiv = document.getElementById('detailed-content');
+      detailedDiv.innerHTML = '';
+      detailedData.forEach(item => {
+        if (item && item.heading) {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <div class="text-content">
+              <h3>${item.heading.replace(/\*\*/g, '')}</h3>
+              <p>${item.description}</p>
+            </div>
+          `;
+          detailedDiv.appendChild(div);
+        }
+      });
+
+      // Dynamic theming and alert based on the first forecast
+      const firstTemp = parseInt(ataglanceData[1].temperature.replace(/\*\*/g, '')) || 0;
+      if (firstTemp < 0) {
+        document.body.className = 'cold';
+        document.getElementById('alert').style.display = 'block';
+        document.getElementById('alert').textContent = '⚠️ Extreme Cold Warning: Protect against frostbite!';
+      } else if (firstTemp > 100) {
+        document.body.className = 'hot';
+        document.getElementById('alert').style.display = 'block';
+        document.getElementById('alert').textContent = '⚠️ Extreme Heat Warning: Stay hydrated!';
+      } else {
+        document.body.className = 'neutral';
+        document.getElementById('alert').style.display = 'none';
+      }
+
+      // Share button functionality
+      document.getElementById('share-btn').addEventListener('click', () => {
+        const shareText = `Weather Forecast: ${ataglanceData[1].description} | Temp: ${ataglanceData[1].temperature.replace(/\*\*/g, '')} | Details: https://bdvermontpublic.github.io/weather-widget-vp/enhanced-weather.html`;
+        if (navigator.share) {
+          navigator.share({
+            title: 'Enhanced Weather Forecast',
+            text: shareText
+          }).catch(err => console.error('Share failed:', err));
+        } else {
+          navigator.clipboard.writeText(shareText).then(() => {
+            alert('Forecast copied to clipboard!');
+          });
+        }
+      });
+
+      // Update height after content and images load
+      Promise.all(imagesToLoad).then(() => {
+        setTimeout(() => {
+          if (pymChild) {
+            pymChild.sendHeight();
+            console.log('Height sent:', document.body.scrollHeight);
+          }
+        }, 100);
+      });
+    })
+    .catch(error => console.error('Error loading weather data:', error));
+  </script>
+</body>
+</html>
