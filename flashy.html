@@ -131,20 +131,38 @@
         const shareText = `Weather Forecast: ${ataglanceData[1].description} | Temp: ${ataglanceData[1].temperature.replace(/\*\*/g, '')} | Details: https://bdvermontpublic.github.io/weather-widget-vp/enhanced-weather.html`;
         console.log('Share button clicked');
         console.log('Navigator.share available:', !!navigator.share);
-        if (navigator.share) {
-          console.log('Using Web Share API');
+
+        // Detect desktop environment (basic user-agent check)
+        const isDesktop = /Windows|Macintosh|Linux/i.test(navigator.userAgent) && !/Mobile|Android|iPhone|iPad/i.test(navigator.userAgent);
+
+        if (navigator.share && !isDesktop) {
+          console.log('Using Web Share API on non-desktop');
           navigator.share({
             title: 'Enhanced Weather Forecast',
             text: shareText
           }).catch(err => console.error('Share failed:', err));
         } else {
-          console.log('Using clipboard fallback');
+          console.log('Using clipboard or manual copy on desktop/fallback');
           navigator.clipboard.writeText(shareText).then(() => {
             console.log('Clipboard write successful');
-            alert('Forecast copied to clipboard!');
+            alert('Forecast copied to clipboard! You can paste it (Ctrl+V) anywhere.');
           }).catch(err => {
             console.error('Clipboard write failed:', err);
-            alert('Failed to copy to clipboard. Please try again.');
+            // Manual copy fallback
+            const textarea = document.createElement('textarea');
+            textarea.value = shareText;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+              document.execCommand('copy');
+              alert('Forecast copied to clipboard! If not, copy the text below:\n\n' + shareText);
+            } catch (copyErr) {
+              alert('Clipboard access failed. Please copy the text below manually:\n\n' + shareText);
+            }
+            document.body.removeChild(textarea);
           });
         }
       });
