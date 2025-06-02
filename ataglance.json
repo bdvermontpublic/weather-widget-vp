@@ -16,5 +16,11 @@
     "description": "Brief respite with light flurries, but frostbite risk remains\r\nhigh",
     "temperature": "**-15°F**",
     "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+  },
+  "4": {
+    "heading": "**Tomorrow Night**",
+    "description": "Another deep freeze sets in, with howling winds returning\r\nunder a starless sky",
+    "temperature": "**-30°F**",
+    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
   }
 }
