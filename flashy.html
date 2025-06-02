@@ -124,15 +124,27 @@
 
       // Share button functionality
       document.getElementById('share-btn').addEventListener('click', () => {
+        if (!ataglanceData[1] || !ataglanceData[1].description || !ataglanceData[1].temperature) {
+          alert('No forecast data available to share.');
+          return;
+        }
         const shareText = `Weather Forecast: ${ataglanceData[1].description} | Temp: ${ataglanceData[1].temperature.replace(/\*\*/g, '')} | Details: https://bdvermontpublic.github.io/weather-widget-vp/enhanced-weather.html`;
+        console.log('Share button clicked');
+        console.log('Navigator.share available:', !!navigator.share);
         if (navigator.share) {
+          console.log('Using Web Share API');
           navigator.share({
             title: 'Enhanced Weather Forecast',
             text: shareText
           }).catch(err => console.error('Share failed:', err));
         } else {
+          console.log('Using clipboard fallback');
           navigator.clipboard.writeText(shareText).then(() => {
+            console.log('Clipboard write successful');
             alert('Forecast copied to clipboard!');
+          }).catch(err => {
+            console.error('Clipboard write failed:', err);
+            alert('Failed to copy to clipboard. Please try again.');
           });
         }
       });
