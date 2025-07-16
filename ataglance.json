@@ -16,5 +16,11 @@
     "description": "Scattered showers and thunderstorms.",
     "temperature": "**80 to 90 north to south**",
     "image": "https://fairbanksmuseum.org/wp-content/uploads/2023/03/thunderstorm_sun.png"
+  },
+  "4": {
+    "heading": "**Friday**",
+    "description": "A spotty morning shower. Clouds giving way to increasing sun.\r\nMuch cooler, less humid.",
+    "temperature": "**70s to around 80**",
+    "image": "https://fairbanksmuseum.org/wp-content/uploads/2023/03/partly_sunny_showers.png"
   }
 }
