@@ -1,20 +1,20 @@
 {
   "1": {
     "heading": "**Today**",
-    "description": "Sunshine, mixing with clouds. Warm, and somewhat humid. Highs in the 80s. Winds light and variable.",
-    "temperature": "**75°F**",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+    "description": "Slight chance of a late-day shower or storm in far northern\r\nNew York.",
+    "temperature": "**Upper 80s to mid 90s**",
+    "image": "https://fairbanksmuseum.org/wp-content/uploads/2023/08/Mostly_sunny.png"
   },
   "2": {
     "heading": "**Tonight**",
-    "description": "Evening showers and storms, then tapering off. Upper 50s and 60s",
-    "temperature": "**95°F**",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+    "description": "Chance of showers in the west, mainly late.",
+    "temperature": "**Upper 60s to mid 70s**",
+    "image": "https://fairbanksmuseum.org/wp-content/uploads/2023/03/partly_cloudy_showers_night.png"
   },
   "3": {
-    "heading": "**Tomorrow**",
-    "description": "Clouds giving way to sun.  An isolated shower northeast.\r\nUpper 70s to mid 80s",
-    "temperature": "**65°F**",
-    "image": "https://bdvermontpublic.github.io/weather-widget-vp/images/light_rain.png"
+    "heading": "**Thursday**",
+    "description": "Scattered showers and thunderstorms.",
+    "temperature": "**80 to 90 north to south**",
+    "image": "https://fairbanksmuseum.org/wp-content/uploads/2023/03/thunderstorm_sun.png"
   }
 }
