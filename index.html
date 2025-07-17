@@ -1,100 +1,88 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather Widget - Vermont Public</title>
+  <title>Weather Widget</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
-    .container { display: flex; flex-direction: column; gap: 10px; padding: 10px; width: 100%; box-sizing: border-box; }
-    .section { margin-bottom: 10px; }
-    .item { display: flex; align-items: flex-start; margin-bottom: 5px; }
-    .image { max-width: 80px; max-height: 80px; margin-right: 10px; }
-    .text-content { flex: 1; }
-    .text-content h3 { margin: 0 0 2px 0; font-weight: bold; }
-    .text-content p { margin: 0 0 2px 0; word-wrap: break-word; }
-    .text-content p strong { font-weight: bold; }
+    .forecast-section {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+    .forecast-section h3 {
+      margin: 0 0 5px;
+      color: #333;
+    }
+    .forecast-section p {
+      margin: 5px 0;
+      color: #666;
+    }
+    .forecast-section img {
+      max-width: 50px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="section" id="ataglance-section">
-      <h2>At a Glance</h2>
-      <div id="ataglance-content"></div>
-    </div>
-    <div class="section" id="detailed-section">
-      <h2>Detailed Forecast</h2>
-      <div id="detailed-content"></div>
-    </div>
-  </div>
-
+  <div id="weather-widget"></div>
   <script>
-    // Load Pym.js
-    (function(d, s, id) {
-      const js = d.createElement(s);
-      js.id = id;
-      js.src = 'https://pym.nprapps.org/pym.v1.min.js';
-      d.getElementsByTagName('head')[0].appendChild(js);
-    })(document, 'script', 'pym-js');
-
-    // Initialize pymChild and update height after content loads
-    let pymChild = null;
-    window.addEventListener('load', () => {
-      if (window.pym) {
-        pymChild = new pym.Child({ polling: 500 });
-      }
-    });
-
-    // Fetch and display At a Glance data
-    fetch('ataglance.json')
+    fetch('https://bdvermontpublic.github.io/weather-widget-vp/detailed.json')
       .then(response => response.json())
       .then(data => {
-        const contentDiv = document.getElementById('ataglance-content');
-        contentDiv.innerHTML = '';
-        for (let i = 1; i <= 4; i++) {
-          const item = data[i];
-          if (item && item.heading) {
-            const div = document.createElement('div');
-            div.className = 'item';
-            div.innerHTML = `
-              ${item.image ? `<img src="${item.image}" alt="${item.heading.replace(/\*\*/g, '')} weather image" class="image">` : ''}
-              <div class="text-content">
-                <h3>${item.heading.replace(/\*\*/g, '')}</h3>
-                <p>${item.description}</p>
-                <p><strong>Temperature:</strong> ${item.temperature.replace(/\*\*/g, '')}</p>
-              </div>
-            `;
-            contentDiv.appendChild(div);
-          }
-        }
-        // Update height after content loads
-        if (pymChild) pymChild.sendHeight();
+        const widget = document.getElementById('weather-widget');
+        widget.innerHTML = data.map(item => `
+          <div class="forecast-section">
+            <h3>${item.heading}</h3>
+            <p>${item.text}</p>
+            <p><strong>${item.temperature}</strong></p>
+            <img src="${item.icon_url}" alt="${item.heading} icon">
+          </div>
+        `).join('');
       })
-      .catch(error => console.error('Error loading ataglance.json:', error));
-
-    // Fetch and display Detailed Forecast data
-    fetch('detailed.json')
-      .then(response => response.json())
-      .then(data => {
-        const contentDiv = document.getElementById('detailed-content');
-        contentDiv.innerHTML = '';
-        data.forEach(item => {
-          if (item && item.heading) {
-            const div = document.createElement('div');
-            div.className = 'item';
-            div.innerHTML = `
-              <div class="text-content">
-                <h3>${item.heading.replace(/\*\*/g, '')}</h3>
-                <p>${item.description}</p>
-              </div>
-            `;
-            contentDiv.appendChild(div);
-          }
-        });
-        // Update height after content loads
-        if (pymChild) pymChild.sendHeight();
-      })
-      .catch(error => console.error('Error loading detailed.json:', error));
+      .catch(error => {
+        console.error('Error fetching forecast:', error);
+        document.getElementById('weather-widget').innerHTML = '<p>Failed to load forecast. Check console for details.</p>';
+      });
   </script>
 </body>
 </html>
